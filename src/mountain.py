@@ -1,21 +1,30 @@
+# -*- coding: utf-8 -*-
+
 """
 Class to represent the current state of a mountain
 """
+import logging
+logger = logging.getLogger(__name__)
 
 class Mountain:
-    def __init__(self, value, steps, num_tokens, num_players):
-        self.value = value  # value of token for this mountain
-        self.steps = steps  # number of steps on mountain
-        self.num_tokens = num_tokens  # initial amount of tokens
+    def __init__(self, token_value, num_tokens, height, players):
+        self.token_value = token_value  # Value of token for this mountain;
+                                        # must be unique
+        self.num_tokens = num_tokens  # Initial number of tokens
+        self.height = height # Number of steps on mountain.  Note that if a 
+                             # mountain has height 4, 0 is the very bottom 
+                             # of the mountain (where the goats start) and 
+                             # 4 is the very top (where the goats eat).
+        self.players = players # We keep this for input checking; will log 
+                               # error if a Mountain is asked to move a goat
+                               # of a color that doesn't exist
 
-        # dict mapping int to list to store which goats are on each step
-        # bottom of mountain is 0; top of mountain is self.steps
-        # lists will start empty (zero players) except for bottom (all players)
-        # We are representing players by integers starting from 0
-        goats = {}
-        goats[0] = [i for i in range(num_players)]
-        for i in range(1, steps+1):
-            goats[i] = []
+        # dict mapping goat color to int to store which goats are on each step
+        # bottom of mountain is 0; top of mountain is self.height.  Start by
+        # putting all the goats at the bottom.
+        goat_locations = {}
+        for player in players:
+            goat_locations[player.color] = 0
 
     """
     Move @param player's goat up by one step, or do nothing if goat is already

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # game_controller.py - when called, runs a single game of Mountain Goats
 # and returns the result to the caller.  We anticipate that the calling 
 # function will be an object of the Experimenter class and will set up
@@ -13,12 +15,22 @@
 # the game are reached and then the results (as well as the final 
 # GameState) are returned to the caller.
 
-class GameController:
+from game_state import Game_State
+from mountain import Mountain
+from player import Player
+import logging
+logger = logging.getLogger(__name__)
+
+class Game_Controller:
     """
-    Initialize players and game state
+    Receive a list of Player objects and a list of Mountain objects and
+    create a Game_State object
     """
-    def __init__(self):
-        pass
+    def __init__(self, list_of_players, list_of_mountains, 
+        list_of_bonus_tokens):
+        self.game_state = Game_State(list_of_players, list_of_mountains, 
+            list_of_bonus_tokens)
+            
 
     def validate_move(self, move): #name it move_is_valid so return result
                                    #of True is easily understood?

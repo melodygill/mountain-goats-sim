@@ -1,14 +1,18 @@
-"""
-Class that represents the current state of the game.
-Mountains, chips on top of mountain
-Location of goats
-Players' chips
-Current turn
-Current dice roll
-"""
+# -*- coding: utf-8 -*-
 
+"""
+Class that represents the current state of the game.  Contains,
+List of Mountains (which, in turn, has location of goats and number of tokens
+    remaining)
+List of Players (which, in turn, has the number of tokens the player owns)
+Current turn (int)
+
+Is responsible for generating a dice roll when necessary.
+"""
 from mountain import Mountain
 from random import Random
+import logging
+logger = logging.getLogger(__name__)
 
 NUM_DICE = 4  # can move this elsewhere
 
@@ -21,22 +25,12 @@ class GameState:
     ^ for now, we could consider hardcoding mountain info and making it configurable
     later
     """
-    def __init__(self, num_players, mountain_info):
-        self.num_players = num_players
-
-        # For each player, store score, list of current chips
-        # TODO: would this be better as a class or struct?
-        players = {}
-        for i in range(num_players):
-            players[i] = (0, [])  # tuple of score and list of current chips
-
-        # Variable for current turn. Call next_turn before the first turn
-        current_turn = -1
-
-        # TODO: should dice roll be a list of all dice values
-        # or just the sum of the non-ones and a count of the ones?
-        # I went with list, seems simpler
-        dice_roll = []
+    def __init__(self, players, mountains, bonus_tokens):
+        self.players = players # A list of Player objects
+        self.mountains = mountains # A list of Mountain objects
+        self.unclaimed_bonus_tokens = bonus_tokens
+        self.current_turn = 0 # Game hasn't started yet; call increment_turn
+                              # at the beginning of the game.      
 
         # For each mountain, store value of the chips, number of remaining chips,
         # where goats are on mountain, number of steps
