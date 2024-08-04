@@ -23,7 +23,9 @@ from game_controller import Game_Controller
 import logging
 logger = logging.getLogger(__name__)
 
-logging.basicConfig(filename="log.txt", level=logging.DEBUG)
+logging.basicConfig(filename = "log.txt", encoding = "utf-8", 
+    level = logging.DEBUG)
+# All logging must take place after the line above
 
 # These values define a four-player game according to the game rules as
 # published.  Change them if you want less players (the game is published as
