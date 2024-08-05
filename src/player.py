@@ -18,6 +18,9 @@ class Player:
         self.color = color # String.  Must be unique amongst all the players
         self.list_of_tokens = [] # List of ints; might not be sorted
         self.list_of_bonus_tokens = [] # List of ints; might not be sorted
+
+    def __str__(self):
+        return f"{self.color} player has tokens: {self.list_of_tokens} and bonus tokens: {self.list_of_bonus_tokens}"
         
 # Player objects are almost always found in lists which makes it a bit 
 # difficult if you want to do things like add a token to the Red player.

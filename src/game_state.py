@@ -17,28 +17,12 @@ logger = logging.getLogger(__name__)
 NUM_DICE = 4  # can move this elsewhere
 
 class GameState:
-    """
-    Initialize the game_state object
-    num_players - integer
-    mountain_info - list of (int, int, int) that represents number associated with mountain,
-      number of steps on the mountain, initial number of tokens -> so (score, steps, num_tokens)
-    ^ for now, we could consider hardcoding mountain info and making it configurable
-    later
-    """
     def __init__(self, players, mountains, bonus_tokens):
-        self.players = players # A list of Player objects
-        self.mountains = mountains # A list of Mountain objects
+        self.players = players # A dict of Player objects
+        self.mountains = mountains # A dict of Mountain objects
         self.unclaimed_bonus_tokens = bonus_tokens
         self.current_turn = 0 # Game hasn't started yet; call increment_turn
-                              # at the beginning of the game.      
-
-        # For each mountain, store value of the chips, number of remaining chips,
-        # where goats are on mountain, number of steps
-        # Dict of mountains where keys are integers that uniquely identify mountains
-        # (I chose the value of their token), and values are the mountain objects
-        mountains = {}
-        for (score, steps, num_tokens) in mountain_info:
-            mountains[score] = Mountain(score, steps, num_tokens, num_players)
+                              # at the beginning of the game. 
 
     """
     Update the current turn to the next player.

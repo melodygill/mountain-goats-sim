@@ -20,6 +20,8 @@ experimenter is responsible for,
 from mountain import Mountain
 from player import Player
 from game_controller import Game_Controller
+
+from collections import OrderedDict
 import logging
 logger = logging.getLogger(__name__)
 
@@ -43,19 +45,22 @@ EIGHT_MOUNTAIN = Mountain(8, 9, 3, LIST_OF_PLAYER_COLORS)
 NINE_MOUNTAIN = Mountain(9, 8, 2, LIST_OF_PLAYER_COLORS)
 TEN_MOUNTAIN = Mountain(10, 7, 2, LIST_OF_PLAYER_COLORS)
 
-# First, make a list of Player objects.
-# The order of the list below determines who goes first, who goes second, etc.
-list_of_players = []
+# First, make a dict of Player objects.
+# The order of LIST_OF_PLAYER_COLORS determines who goes first, who goes second, etc.
+players = OrderedDict()
 for color in LIST_OF_PLAYER_COLORS:
-    this_player = Player(color)
-    list_of_players.append(this_player)
+    players[color] = Player(color)
     
 # Now make a list of Mountain objects.
 list_of_mountains = [FIVE_MOUNTAIN, SIX_MOUNTAIN, SEVEN_MOUNTAIN, 
     EIGHT_MOUNTAIN, NINE_MOUNTAIN, TEN_MOUNTAIN]
+# Organize Mountain objects in a dict
+mountains = dict()
+for mountain in list_of_mountains:
+    mountains[mountain.token_value] = mountain
 
 # Call game_controller
-game_controller = Game_Controller(list_of_players, list_of_mountains, 
+game_controller = Game_Controller(players, mountains, 
     LIST_OF_BONUS_TOKENS)
 results = game_controller.game_loop()
 

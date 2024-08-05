@@ -23,12 +23,12 @@ logger = logging.getLogger(__name__)
 
 class Game_Controller:
     """
-    Receive a list of Player objects and a list of Mountain objects and
+    Receive a dict of Player objects and a dict of Mountain objects and
     create a Game_State object
     """
-    def __init__(self, list_of_players, list_of_mountains, 
+    def __init__(self, players, mountains, 
         list_of_bonus_tokens):
-        self.game_state = Game_State(list_of_players, list_of_mountains, 
+        self.game_state = Game_State(players, mountains, 
             list_of_bonus_tokens)
             
 
