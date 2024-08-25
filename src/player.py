@@ -21,7 +21,15 @@ class Player:
 
     def __str__(self):
         return f"{self.color} player has tokens: {self.list_of_tokens} and bonus tokens: {self.list_of_bonus_tokens}"
-        
+    
+    # Adds int token_value to the player's list of tokens
+    def add_token(self, token_value):
+        self.list_of_tokens.append(token_value)
+
+
+# TODO: the following functions may not be needed because I changed the
+# player objects to be in a dict in experimenter
+
 # Player objects are almost always found in lists which makes it a bit 
 # difficult if you want to do things like add a token to the Red player.
 # That will involve searching the list of the Red player object and then 

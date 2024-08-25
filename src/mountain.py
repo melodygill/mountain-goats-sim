@@ -27,18 +27,40 @@ class Mountain:
             goat_locations[player.color] = 0
 
     """
-    Move @param player's goat up by one step, or do nothing if goat is already
-    at the top of the mountain.
+    Move @param player's goat up by one step, or keep goat at the top.
     Return true if the goat is at the top of the mountain after the step, or
     false if it is not at the top.
+    Decrements num_tokens and adds self.token_value to the player's list of
+    tokens.
+    Kicks other goats off the top if this player is at the top.
     """
-    # TODO: should this function also kick other goats off if they're at the top?
-    # could also decrement num_tokens here, but calling function needs to update
-    # player's score
-    # ^ in that case, we should only return true if the player will get a token
-    # by stepping up
     def step_up(self, player):
-        pass
+        # Input checking
+        if player.color not in self.goat_locations:
+            err_message = "Attempted to move player " + player.color + ", which does not exist in " + self.goat_locations + ".  Aborting program!"
+            logger.fatal(err_message)  
+            print(err_message)
+            raise Exception(err_message)
+
+        current_loc = self.goat_locations[player.color]
+        # Go up one step if goat isn't at the top
+        if current_loc < self.height:
+            self.goat_locations[player.color] += 1
+
+        # Goat is at the top of the mountain
+        if current_loc == self.height:
+            # Update token counts
+            self.num_tokens -= 1
+            player.add_token(self.token_value)
+
+            # Kick off other goats
+            for goat_loc in self.goat_locations:
+                if self.goat_locations[goat_loc] == self.height:
+                    self.goat_locations[goat_loc] = 0
+            return True
+        # Goat isn't at the top
+        else:
+            return False
 
     # Assuming that num_tokens will be decremented through the game
     def get_num_tokens(self):
