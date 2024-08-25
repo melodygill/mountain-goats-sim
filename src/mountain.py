@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class Mountain:
     def __init__(self, token_value, num_tokens, height, players):
         self.token_value = token_value  # Value of token for this mountain;
-                                        # must be unique
+                                        # must be unique amongst all mountains
         self.num_tokens = num_tokens  # Initial number of tokens
         self.height = height # Number of steps on mountain.  Note that if a 
                              # mountain has height 4, 0 is the very bottom 

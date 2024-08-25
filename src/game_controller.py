@@ -15,28 +15,68 @@
 # the game are reached and then the results (as well as the final 
 # GameState) are returned to the caller.
 
+# Experimenter should use this class by calling Game_Controller.init() and 
+# then calling Game_Controller.game_loop().  All the other functions are 
+# intended for internal use only.
+
 from game_state import Game_State
 from mountain import Mountain
 from player import Player
 import logging
 logger = logging.getLogger(__name__)
 
+MAX_NUM_INVALID_MOVES = 1000 # Protects against potential infinite loop
+
 class Game_Controller:
     """
     Receive a dict of Player objects and a dict of Mountain objects and
     create a Game_State object
     """
-    def __init__(self, players, mountains, 
-        list_of_bonus_tokens):
-        self.game_state = Game_State(players, mountains, 
-            list_of_bonus_tokens)
-            
+    def __init__(self, players, mountains, list_of_bonus_tokens):
+        self.game_state = Game_State(players, mountains, list_of_bonus_tokens)
+        self.players = players
+        self.mountains = mountains
+        self.list_of_bonus_tokens = list_of_bonus_tokens
+        
+    """
+    Main game loop
+    """
+    def game_loop(self):
+    # Receive properties from caller:
+    #   * Names of players and where to find the associated code for each.
+    #   * Order of play (if random order is desired, the caller is responsible
+    #     for creating and passing a new random order on each call).
+    
+        game_over = False
+        while (game_over == False):
+          for player in self.players:
+              player_move_is_valid = False
+              query_counter = 0
+              while (player_move_is_valid == False):
+                  move = self.get_player_move()
+                  if (self.move_is_valid(move)) == True:
+                      player_move_is_valid = True
+                      self.implement_move()
+                  else:
+                      logger.error(f"Got invalid move from player {player.color}!")
+                      query_counter = query_counter + 1
+                      
+                  if (query_counter > MAX_NUM_INVALID_MOVES):
+                      err_message = "Got more than " + str(MAX_NUM_INVALID_MOVES) + "from player " + player.color + ".  Aborting program!"
+                      logger.fatal(err_message)  
+                      print(err_message)
+                      raise Exception(err_message)
+          if (self.is_game_over() == True):
+              game_over = True
+        return self.report_results()  
 
-    def validate_move(self, move): #name it move_is_valid so return result
-                                   #of True is easily understood?
+    def get_player_move(self):
+        pass        
+
+    def move_is_valid(self, move): 
         # A move is a list of integers that say which mountain we want
         # to move up.
-        # Validate_move needs to receive the results of the dice roll 
+        # move_is_valid needs to receive the results of the dice roll 
         # and just has to make sure that the list of integers submitted
         # can be legally achieved from the dice roll.
         # Player code likely wants to know whether the move that it's
@@ -45,56 +85,15 @@ class Game_Controller:
         # GameController need it.
         pass
 
-    """
-    Update game state to reflect that the move was made
-    """
     def implement_move(self, move):
         pass
-
-    def requery(self): #In retrospect, is this necessary given the 
-        pass           #game loop psuedocode below?
     
-    """
-    Game routines
-    """
     def is_game_over(self):
         pass
     
-    def roll_dice(self):
+    def report_results(self):
         pass
     
-    """
-    Main game loop
-    """
-    def game_loop():
-    # Receive properties from caller:
-    #   * Names of players and where to find the associated code for each.
-    #   * Order of play (if random order is desired, the caller is responsible
-    #     for creating and passing a new random order on each call)
-    
-    # Create GameState with initial state
-    
-    # game_over = false
-    # while (game_over == false)
-    #   foreach (player)
-    #       player_move_is_valid = false
-    #       query_counter = 0
-    #       while (player_move_is_valid == false)
-    #           GetPlayerMove()
-    #           if (validate_move()) == true
-    #               player_move_is_valid = true
-    #               implement_move()
-    #           else
-    #               Write error message (player code returned bad result)
-    #               query_counter++
-    #           if (query_counter > some_magic_number):
-    #               Write error message - player code failing too much
-    #               print("Potential infinite loop; ending program")
-    #               throw Exception 
-    #   if (is_game_over() == true):
-    #       game_over = true
-    #   ReportResults()  
-        pass
     
 if __name__ == "__main__":
     #Call to start unit tests go here.  Use the unittest module in the 

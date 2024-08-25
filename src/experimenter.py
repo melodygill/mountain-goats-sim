@@ -66,4 +66,5 @@ results = game_controller.game_loop()
 
 # TO-DO
 # The part where we run 10,000 games with each player using a different 
-# strategy and collate and report the results.
+# strategy and collate and report the results.  (Make this work with just one
+# game first).
