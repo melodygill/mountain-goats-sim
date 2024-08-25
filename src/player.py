@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 An object of the Player class represents a single player in the game Mountain 
-Goats.  The class is short and just stores data.
+Goats.
 
 color = this player's color as a string, e.g. "Red" or "White"
 list_of_tokens = this player's tokens as a list of ints, e.g. if it's 
@@ -9,15 +9,17 @@ list_of_tokens = this player's tokens as a list of ints, e.g. if it's
     a token of value 3.
 list_of_bonus_tokens = this player's bonus tokens as a list of ints; e.g.
     if it's [15], the player has one bonus token with a value of 15.
+bot_object = the bot that this Player represents.
 """
 import logging
 logger = logging.getLogger(__name__)
 
 class Player:
-    def __init__(self, color):
+    def __init__(self, color, bot_object):
         self.color = color # String.  Must be unique amongst all the players
         self.list_of_tokens = [] # List of ints; might not be sorted
         self.list_of_bonus_tokens = [] # List of ints; might not be sorted
+        self.bot_object = bot_object
 
     def __str__(self):
         return f"{self.color} player has tokens: {self.list_of_tokens} and bonus tokens: {self.list_of_bonus_tokens}"
@@ -25,6 +27,10 @@ class Player:
     # Adds int token_value to the player's list of tokens
     def add_token(self, token_value):
         self.list_of_tokens.append(token_value)
+
+    # Query the bot for moves
+    def get_moves(self, game_state, dice_roll):
+        return self.bot_object.get_moves(game_state, dice_roll)
 
 
 # TODO: the following functions may not be needed because I changed the

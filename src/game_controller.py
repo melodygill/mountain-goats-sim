@@ -15,8 +15,8 @@
 # the game are reached and then the results (as well as the final 
 # GameState) are returned to the caller.
 
-# Experimenter should use this class by calling Game_Controller.init() and 
-# then calling Game_Controller.game_loop().  All the other functions are 
+# Experimenter should use this class by calling GameController.init() and 
+# then calling GameController.game_loop().  All the other functions are 
 # intended for internal use only.
 
 from game_state import Game_State
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 MAX_NUM_INVALID_MOVES = 1000 # Protects against potential infinite loop
 
-class Game_Controller:
+class GameController:
     """
     Receive a dict of Player objects and a dict of Mountain objects and
     create a Game_State object

@@ -19,7 +19,9 @@ experimenter is responsible for,
 
 from mountain import Mountain
 from player import Player
-from game_controller import Game_Controller
+from game_controller import GameController
+
+from bots.my_bot import MyBot
 
 from collections import OrderedDict
 import logging
@@ -49,7 +51,8 @@ TEN_MOUNTAIN = Mountain(10, 7, 2, LIST_OF_PLAYER_COLORS)
 # The order of LIST_OF_PLAYER_COLORS determines who goes first, who goes second, etc.
 players = OrderedDict()
 for color in LIST_OF_PLAYER_COLORS:
-    players[color] = Player(color)
+    # For now, make all the players MyBots
+    players[color] = Player(color, MyBot())
     
 # Now make a list of Mountain objects.
 list_of_mountains = [FIVE_MOUNTAIN, SIX_MOUNTAIN, SEVEN_MOUNTAIN, 
@@ -60,7 +63,7 @@ for mountain in list_of_mountains:
     mountains[mountain.token_value] = mountain
 
 # Call game_controller
-game_controller = Game_Controller(players, mountains, 
+game_controller = GameController(players, mountains, 
     LIST_OF_BONUS_TOKENS)
 results = game_controller.game_loop()
 
