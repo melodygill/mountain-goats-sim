@@ -71,7 +71,11 @@ class GameController:
         return self.report_results()  
 
     def get_player_move(self):
-        pass        
+        # Find which player's turn it is
+        current_player = self.game_state.current_turn % len(self.players)
+        player_obj = list(self.players.values())[current_player]
+        # TODO: need to define dice_roll
+        return player_obj.get_moves(self.game_state, self.dice_roll)
 
     def move_is_valid(self, move): 
         # A move is a list of integers that say which mountain we want
@@ -85,6 +89,7 @@ class GameController:
         # GameController need it.
         pass
 
+    # move is a list of ints representing which mountains have goats to be moved
     def implement_move(self, move):
         pass
     
