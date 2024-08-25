@@ -49,25 +49,25 @@ class Game_Controller:
     
         game_over = False
         while (game_over == False):
-          for player in self.players:
-              player_move_is_valid = False
-              query_counter = 0
-              while (player_move_is_valid == False):
-                  move = self.get_player_move()
-                  if (self.move_is_valid(move)) == True:
-                      player_move_is_valid = True
-                      self.implement_move()
-                  else:
-                      logger.error(f"Got invalid move from player {player.color}!")
-                      query_counter = query_counter + 1
-                      
-                  if (query_counter > MAX_NUM_INVALID_MOVES):
-                      err_message = "Got more than " + str(MAX_NUM_INVALID_MOVES) + "from player " + player.color + ".  Aborting program!"
-                      logger.fatal(err_message)  
-                      print(err_message)
-                      raise Exception(err_message)
-          if (self.is_game_over() == True):
-              game_over = True
+            for player in self.players:
+                player_move_is_valid = False
+                query_counter = 0
+                while (player_move_is_valid == False):
+                    move = self.get_player_move()
+                    if (self.move_is_valid(move)) == True:
+                        player_move_is_valid = True
+                        self.implement_move()
+                    else:
+                        logger.error(f"Got invalid move from player {player.color}!")
+                        query_counter = query_counter + 1
+                        
+                    if (query_counter > MAX_NUM_INVALID_MOVES):
+                        err_message = "Got more than " + str(MAX_NUM_INVALID_MOVES) + "from player " + player.color + ".  Aborting program!"
+                        logger.fatal(err_message)  
+                        print(err_message)
+                        raise Exception(err_message)
+            if (self.is_game_over() == True):
+                game_over = True
         return self.report_results()  
 
     def get_player_move(self):
