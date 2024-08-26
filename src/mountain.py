@@ -54,9 +54,9 @@ class Mountain:
             player.add_token(self.token_value)
 
             # Kick off other goats
-            for goat_loc in self.goat_locations:
-                if self.goat_locations[goat_loc] == self.height:
-                    self.goat_locations[goat_loc] = 0
+            for color in self.goat_locations.keys():
+                if color != player.color and self.goat_locations[color] == self.height:
+                    self.goat_locations[color] = 0
             return True
         # Goat isn't at the top
         else:

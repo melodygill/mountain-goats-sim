@@ -53,10 +53,10 @@ class GameController:
                 player_move_is_valid = False
                 query_counter = 0
                 while (player_move_is_valid == False):
-                    move = self.get_player_move()
+                    move = self.get_player_move(player)
                     if (self.move_is_valid(move)) == True:
                         player_move_is_valid = True
-                        self.implement_move()
+                        self.implement_move(player, move)
                     else:
                         logger.error(f"Got invalid move from player {player.color}!")
                         query_counter = query_counter + 1
@@ -66,16 +66,16 @@ class GameController:
                         logger.fatal(err_message)  
                         print(err_message)
                         raise Exception(err_message)
-            if (self.is_game_over() == True):
-                game_over = True
+                # TODO: roll the dice, indicate to game_state that it's a new turn
+            game_over = self.is_game_over()  # should this be within the for loop?
         return self.report_results()  
 
-    def get_player_move(self):
+    def get_player_move(self, player):
         # Find which player's turn it is
-        current_player = self.game_state.current_turn % len(self.players)
-        player_obj = list(self.players.values())[current_player]
+        # current_player = self.game_state.current_turn % len(self.players)
+        # player_obj = list(self.players.values())[current_player]
         # TODO: need to define dice_roll
-        return player_obj.get_moves(self.game_state, self.dice_roll)
+        return player.get_moves(self.game_state, self.dice_roll)
 
     def move_is_valid(self, move): 
         # A move is a list of integers that say which mountain we want
@@ -89,9 +89,14 @@ class GameController:
         # GameController need it.
         pass
 
+    # player is the player who is making this move
     # move is a list of ints representing which mountains have goats to be moved
-    def implement_move(self, move):
-        pass
+    def implement_move(self, player, move):
+        # Move goat on each mountain in move
+        for mountain_num in move:
+            mountain_obj = self.game_state.mountains[mountain_num]
+            mountain_obj.step_up(player)  # pass player object of current player
+
     
     def is_game_over(self):
         pass
