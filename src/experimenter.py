@@ -67,6 +67,11 @@ game_controller = GameController(players, mountains,
     LIST_OF_BONUS_TOKENS)
 results = game_controller.game_loop()
 
+# Print results
+print(f"The winner was {results[0]}!")
+for player in results[1]:
+    print(f"* The {player[0]} player got {player[1]} points.")
+
 # TO-DO
 # The part where we run 10,000 games with each player using a different 
 # strategy and collate and report the results.  (Make this work with just one

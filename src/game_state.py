@@ -14,8 +14,6 @@ from random import Random
 import logging
 logger = logging.getLogger(__name__)
 
-NUM_DICE = 4  # can move this elsewhere
-
 class GameState:
     def __init__(self, players, mountains, bonus_tokens):
         self.players = players # A dict of Player objects
@@ -31,4 +29,22 @@ class GameState:
     """
     def next_turn(self):
         self.current_turn = (self.current_turn + 1) % self.num_players
-        self.dice_roll = [Random.randint(1,6) for _ in range(NUM_DICE)]
+        # I moved dice roll to game_controller because I need the results
+        # there for is_move_valid()
+        
+    def calculate_scores(self):
+        # Returns a list of tuples of type (string player_color, int 
+        # player_score)
+        output = []
+        for player in self.players:
+            score = 0
+            for token in player.list_of_tokens:
+                score = score + token
+            for token in player.list_of_bonus_tokens:
+                score = score + token
+            output.append((player.color, score))
+            
+        return output
+    
+    
+# Gill da Great wuz here!

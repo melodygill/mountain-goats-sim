@@ -22,6 +22,7 @@
 from game_state import Game_State
 from mountain import Mountain
 from player import Player
+import dice_utility
 import logging
 logger = logging.getLogger(__name__)
 
@@ -47,14 +48,18 @@ class GameController:
     #   * Order of play (if random order is desired, the caller is responsible
     #     for creating and passing a new random order on each call).
     
+        logger.info("***Started game loop***")
         game_over = False
         while (game_over == False):
+            self.game_state.current_turn = self.game_state.current_turn + 1
+            logger.info(f"Game turn #{self.game_state.current_turn} begins")
             for player in self.players:
                 player_move_is_valid = False
                 query_counter = 0
                 while (player_move_is_valid == False):
-                    move = self.get_player_move(player)
-                    if (self.move_is_valid(move)) == True:
+                    dice_roll = dice_utility.roll_the_dice()
+                    move = self.get_player_move(player, dice_roll)
+                    if (self.move_is_valid(move, dice_roll)) == True:
                         player_move_is_valid = True
                         self.implement_move(player, move)
                     else:
@@ -66,28 +71,27 @@ class GameController:
                         logger.fatal(err_message)  
                         print(err_message)
                         raise Exception(err_message)
-                # TODO: roll the dice, indicate to game_state that it's a new turn
-            game_over = self.is_game_over()  # should this be within the for loop?
+            game_over = self.is_game_over()  # This is outside the for loop because every player needs to have an equal number of turns before the game can end
         return self.report_results()  
 
-    def get_player_move(self, player):
+    def get_player_move(self, player, dice_roll):
         # Find which player's turn it is
         # current_player = self.game_state.current_turn % len(self.players)
         # player_obj = list(self.players.values())[current_player]
-        # TODO: need to define dice_roll
-        return player.get_moves(self.game_state, self.dice_roll)
+        return player.get_moves(self.game_state, dice_roll)
 
-    def move_is_valid(self, move): 
-        # A move is a list of integers that say which mountain we want
+    def move_is_valid(self, move, dice_roll): 
+        # A move is a list of integers that say which mountains we want
         # to move up.
-        # move_is_valid needs to receive the results of the dice roll 
-        # and just has to make sure that the list of integers submitted
-        # can be legally achieved from the dice roll.
-        # Player code likely wants to know whether the move that it's
-        # thinking about is valid as well.  Maybe we should pull this
-        # function out to a utility class since both player code and 
-        # GameController need it.
-        pass
+        # move_is_valid needs to receive the results of the dice roll and has
+        # to make sure that the list of integers submitted can be legally 
+        # achieved from the dice roll.  Since this is a difficult task, 
+        # move_is_valid() outsources it!
+        legal_possibilities = dice_utility.possible_moves(dice_roll, self.game_state)
+        if move in legal_possibilities:
+            return True
+        else:
+            return False
 
     # player is the player who is making this move
     # move is a list of ints representing which mountains have goats to be moved
@@ -96,13 +100,39 @@ class GameController:
         for mountain_num in move:
             mountain_obj = self.game_state.mountains[mountain_num]
             mountain_obj.step_up(player)  # pass player object of current player
-
     
     def is_game_over(self):
-        pass
+        # Game over when (All bonus point tokens are claimed OR 3 mountains
+        # have no tokens) AND (All players have had an equal number of turns).
+        # We evaluate the token conditions here and use the placement of 
+        # this function call in the game loop to ensure all players have had
+        # an equal number of turns.
+        # Later, we could add code to allow changing the victory condition
+        # to something other than 3 mountains without tokens...
+        if (len(self.game_state.unclaimed_bonus.tokens) == 0):
+            return True
+        num_empty_mountains = 0
+        for mountain in self.game_state.mountains:
+            if len(mountain) == 0:
+                num_empty_mountains = num_empty_mountains + 1
+        if num_empty_mountains >= 3:
+            return True
+        
+        #If we get here, game is still going.
+        return False
     
     def report_results(self):
-        pass
+        # Returns a tuple of (string winner, (list of tuples of type 
+        # (string player_color, int player_score)))
+        scores = self.game_state.calculate_scores()
+        winner = "Not determined"
+        current_high_score = 0
+        for player in scores:
+            if player[1] > current_high_score:
+                winner = player[0]
+                current_high_score = player[1]
+                
+        return (winner, scores)
     
     
 if __name__ == "__main__":
