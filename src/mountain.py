@@ -22,9 +22,9 @@ class Mountain:
         # dict mapping goat color to int to store which goats are on each step
         # bottom of mountain is 0; top of mountain is self.height.  Start by
         # putting all the goats at the bottom.
-        goat_locations = {}
-        for player in players:
-            goat_locations[player.color] = 0
+        self.goat_locations = {}
+        for player in players.values():
+            self.goat_locations[player.color] = 0
 
     """
     Move @param player's goat up by one step, or keep goat at the top.

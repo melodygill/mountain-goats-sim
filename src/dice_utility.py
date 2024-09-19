@@ -7,12 +7,20 @@ the Mountain Goats board game.
 
 import random as Random
 from itertools import combinations
+from copy import deepcopy
 import logging
 logger = logging.getLogger(__name__)
 
 NUM_DICE = 4 # 4 dice in the traditional Mountain Goats game
 
 
+def roll_the_dice():
+    return [Random.randint(1,6) for _ in range(NUM_DICE)]
+
+# Generates all combinations of dice rolls that can be formed by summing any of
+# the dice together, according to the Mountain Goats rules.
+# E.g. if dice = [2,3,4], here are examples of valid combinations:
+# [[2], [5], [5, 4], [9]]
 def generate_combinations(dice):
     result = []
     n = len(dice)
@@ -47,11 +55,28 @@ def generate_combinations(dice):
         final_result.append(subset)  # Add the original subset
         final_result.extend(generate_sums(subset))  # Add all possible sums
 
+    # Remove duplicates
+    final_result = [list(x) for x in set(tuple(sublist) for sublist in final_result)]
+
     return final_result
 
-
-def roll_the_dice():
-    return [Random.randint(1,6) for _ in range(NUM_DICE)]
+# Given a dice roll, return a list of all the dice rolls that could be made by
+# converting extra ones into other values. (No summing, only changing the 1s)
+# E.g. [1, 1, 2, 3] has 2 1s, so one of the 1s can be changed to any other value.
+# Return value: [[1,1,2,3],[1,2,2,3],[1,3,2,3],[1,4,2,3],[1,5,2,3],[1,6,2,3]]
+def expand_ones_in_dice_roll(dice_roll):
+    final_list = [dice_roll]
+    # Base case: Zero or one 1s in the dice roll
+    if how_many_ones_in_die_roll(dice_roll) <= 1:
+        return final_list
+    
+    # Recursive case: Generate lists
+    not_one_values = [2, 3, 4, 5, 6]
+    new_dice_roll = deepcopy(dice_roll)
+    new_dice_roll.remove(1)
+    for val in not_one_values:
+        final_list.extend(expand_ones_in_dice_roll(new_dice_roll + [val]))
+    return final_list
 
 def possible_moves(dice_roll, game_state):
     # Given a list of ints in dice_roll, enumerate all possible legal 
@@ -65,8 +90,11 @@ def possible_moves(dice_roll, game_state):
         print(err_message)
         raise Exception(err_message)
         
-    raw_list_of_moves = []
-    
+
+    # Find add all dice rolls that
+    # are possible with substituting the 1's as per game rules.
+    expanded_dice_roll = expand_ones_in_dice_roll(dice_roll)
+
     # Generate all moves that are possible via simple addition.  Start with 
     # the case where we add all of the dice together.  Then do the cases where
     # we add all of the dice except one together.  Then all of the cases where
@@ -75,22 +103,15 @@ def possible_moves(dice_roll, game_state):
     # single component of an overall move.
     
     # Do magic recursions here to populate raw_list_of_moves
-    combinations_with_sums = generate_combinations(dice_roll)
-
-    # Removing duplicates by converting to set of tuples, then back to list
-    combinations_with_sums = [list(x) for x in set(tuple(sorted(sublist)) for sublist in combinations_with_sums)]
-
-    
-    # If there is more than one 1 in the dice roll, add all moves that
-    # are possible with substituting the 1's as per game rules.
-    if how_many_ones_in_die_roll(dice_roll) > 1:
-        pass # Do magic recursions here to further populate raw_list_of_moves
+    raw_list_of_moves = []
+    for roll in expanded_dice_roll:
+        raw_list_of_moves.extend(generate_combinations(roll))
     
     # From each move, remove the elements that refer to mountains that don't
     # exist.  First make a list of mountains that exist, second compare the
     # elements to that list.
     existing_mountains = []
-    for mountain in game_state.mountains:
+    for mountain in game_state.mountains.values():
         existing_mountains.append(mountain.token_value)
         
     moves_involving_real_mountains = []
@@ -103,9 +124,12 @@ def possible_moves(dice_roll, game_state):
         
     # Now strip out all of the duplicates by converting the list to a set
     # and then back to a list again
-    final_output = []
-    final_output = list(set(moves_involving_real_mountains))
-    
+    # final_output = []
+    # final_output = list(set(moves_involving_real_mountains))
+
+    # could make this faster with itertools https://stackoverflow.com/questions/2213923/removing-duplicates-from-a-list-of-lists
+    final_output = [list(x) for x in set(tuple(sublist) for sublist in moves_involving_real_mountains)]
+
     # Finally done!
     return final_output
 

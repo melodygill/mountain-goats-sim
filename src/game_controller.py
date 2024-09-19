@@ -19,7 +19,7 @@
 # then calling GameController.game_loop().  All the other functions are 
 # intended for internal use only.
 
-from game_state import Game_State
+from game_state import GameState
 from mountain import Mountain
 from player import Player
 import dice_utility
@@ -31,10 +31,10 @@ MAX_NUM_INVALID_MOVES = 1000 # Protects against potential infinite loop
 class GameController:
     """
     Receive a dict of Player objects and a dict of Mountain objects and
-    create a Game_State object
+    create a GameState object
     """
     def __init__(self, players, mountains, list_of_bonus_tokens):
-        self.game_state = Game_State(players, mountains, list_of_bonus_tokens)
+        self.game_state = GameState(players, mountains, list_of_bonus_tokens)
         self.players = players
         self.mountains = mountains
         self.list_of_bonus_tokens = list_of_bonus_tokens
@@ -53,7 +53,7 @@ class GameController:
         while (game_over == False):
             self.game_state.current_turn = self.game_state.current_turn + 1
             logger.info(f"Game turn #{self.game_state.current_turn} begins")
-            for player in self.players:
+            for player in self.players.values():
                 player_move_is_valid = False
                 query_counter = 0
                 while (player_move_is_valid == False):
@@ -109,11 +109,11 @@ class GameController:
         # an equal number of turns.
         # Later, we could add code to allow changing the victory condition
         # to something other than 3 mountains without tokens...
-        if (len(self.game_state.unclaimed_bonus.tokens) == 0):
+        if (len(self.game_state.unclaimed_bonus_tokens) == 0):
             return True
         num_empty_mountains = 0
-        for mountain in self.game_state.mountains:
-            if len(mountain) == 0:
+        for mountain in self.game_state.mountains.values():
+            if mountain.get_num_tokens() == 0:
                 num_empty_mountains = num_empty_mountains + 1
         if num_empty_mountains >= 3:
             return True

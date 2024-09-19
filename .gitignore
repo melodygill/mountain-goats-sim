@@ -1,0 +1,7 @@
+*__pycache__
+*.pyc
+log.txt
+
+src/dict_test.py
+src/test.py
+not_src/itertools_test.py

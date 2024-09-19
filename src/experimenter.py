@@ -40,12 +40,6 @@ logging.basicConfig(filename = "log.txt", encoding = "utf-8",
 
 LIST_OF_PLAYER_COLORS = ["Red", "Black", "Yellow", "White"]
 LIST_OF_BONUS_TOKENS = [15, 12, 9, 6]
-FIVE_MOUNTAIN = Mountain(5, 12, 4, LIST_OF_PLAYER_COLORS)
-SIX_MOUNTAIN = Mountain(6, 11, 4, LIST_OF_PLAYER_COLORS)
-SEVEN_MOUNTAIN = Mountain(7, 10, 3, LIST_OF_PLAYER_COLORS)
-EIGHT_MOUNTAIN = Mountain(8, 9, 3, LIST_OF_PLAYER_COLORS)
-NINE_MOUNTAIN = Mountain(9, 8, 2, LIST_OF_PLAYER_COLORS)
-TEN_MOUNTAIN = Mountain(10, 7, 2, LIST_OF_PLAYER_COLORS)
 
 # First, make a dict of Player objects.
 # The order of LIST_OF_PLAYER_COLORS determines who goes first, who goes second, etc.
@@ -53,6 +47,14 @@ players = OrderedDict()
 for color in LIST_OF_PLAYER_COLORS:
     # For now, make all the players MyBots
     players[color] = Player(color, MyBot())
+
+# Mountain objects need to have access to player objects
+FIVE_MOUNTAIN = Mountain(5, 12, 4, players)
+SIX_MOUNTAIN = Mountain(6, 11, 4, players)
+SEVEN_MOUNTAIN = Mountain(7, 10, 3, players)
+EIGHT_MOUNTAIN = Mountain(8, 9, 3, players)
+NINE_MOUNTAIN = Mountain(9, 8, 2, players)
+TEN_MOUNTAIN = Mountain(10, 7, 2, players)
     
 # Now make a list of Mountain objects.
 list_of_mountains = [FIVE_MOUNTAIN, SIX_MOUNTAIN, SEVEN_MOUNTAIN, 
