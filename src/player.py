@@ -22,7 +22,7 @@ class Player:
         self.bot_object = bot_object
 
     def __str__(self):
-        return f"{self.color} player has tokens: {self.list_of_tokens} and bonus tokens: {self.list_of_bonus_tokens}"
+        return f"{self.color} player has tokens: {self.list_of_tokens} and bonus tokens: {self.list_of_bonus_tokens}\n"
     
     # Adds int token_value to the player's list of tokens
     def add_token(self, token_value):

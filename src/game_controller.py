@@ -63,7 +63,7 @@ class GameController:
                         player_move_is_valid = True
                         self.implement_move(player, move)
                     else:
-                        logger.error(f"Got invalid move from player {player.color}!")
+                        logger.error(f"Got invalid move from player {player.color}! Move={move}, dice roll={dice_roll}")
                         query_counter = query_counter + 1
                         
                     if (query_counter > MAX_NUM_INVALID_MOVES):
@@ -72,6 +72,7 @@ class GameController:
                         print(err_message)
                         raise Exception(err_message)
             game_over = self.is_game_over()  # This is outside the for loop because every player needs to have an equal number of turns before the game can end
+            logger.info(self.game_state)
         return self.report_results()  
 
     def get_player_move(self, player, dice_roll):
@@ -88,7 +89,8 @@ class GameController:
         # achieved from the dice roll.  Since this is a difficult task, 
         # move_is_valid() outsources it!
         legal_possibilities = dice_utility.possible_moves(dice_roll, self.game_state)
-        if move in legal_possibilities:
+        sorted_move = sorted(move)
+        if sorted_move in legal_possibilities:
             return True
         else:
             return False
@@ -96,6 +98,7 @@ class GameController:
     # player is the player who is making this move
     # move is a list of ints representing which mountains have goats to be moved
     def implement_move(self, player, move):
+        logger.info(f"Implementing move {move} for player {player.color}")
         # Move goat on each mountain in move
         for mountain_num in move:
             mountain_obj = self.game_state.mountains[mountain_num]

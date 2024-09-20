@@ -27,7 +27,10 @@ from collections import OrderedDict
 import logging
 logger = logging.getLogger(__name__)
 
-logging.basicConfig(filename = "log.txt", encoding = "utf-8", 
+logging.basicConfig(
+    filename = "log.txt",
+    filemode="w",
+    encoding = "utf-8", 
     level = logging.DEBUG)
 # All logging must take place after the line above
 
@@ -67,6 +70,7 @@ for mountain in list_of_mountains:
 # Call game_controller
 game_controller = GameController(players, mountains, 
     LIST_OF_BONUS_TOKENS)
+
 results = game_controller.game_loop()
 
 # Print results

@@ -25,6 +25,9 @@ class Mountain:
         self.goat_locations = {}
         for player in players.values():
             self.goat_locations[player.color] = 0
+    
+    def __str__(self):
+        return f"Mountain {self.token_value} has {self.num_tokens} tokens left\n"
 
     """
     Move @param player's goat up by one step, or keep goat at the top.
@@ -50,8 +53,9 @@ class Mountain:
         # Goat is at the top of the mountain
         if current_loc == self.height:
             # Update token counts
-            self.num_tokens -= 1
-            player.add_token(self.token_value)
+            if self.num_tokens > 0:
+                self.num_tokens -= 1
+                player.add_token(self.token_value)
 
             # Kick off other goats
             for color in self.goat_locations.keys():

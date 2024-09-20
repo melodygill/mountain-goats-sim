@@ -151,14 +151,11 @@ def possible_moves(dice_roll, game_state):
             if item in existing_mountains:
                 filtered_move.append(item)
         moves_involving_real_mountains.append(filtered_move)
-        
+    
+    # Include []. Kind of a hack
+    moves_involving_real_mountains.append([])
     # Now strip out all of the duplicates by converting the list to a set
-    # and then back to a list again
-    # final_output = []
-    # final_output = list(set(moves_involving_real_mountains))
-
     # could make this faster with itertools https://stackoverflow.com/questions/2213923/removing-duplicates-from-a-list-of-lists
-    # This list may/may not include [] depending on how mountain filtering went
     final_output = [list(x) for x in set(tuple(sorted(sublist)) for sublist in moves_involving_real_mountains)]
 
     # Finally done!

@@ -20,6 +20,17 @@ class GameState:
         self.current_turn = 0 # Game hasn't started yet; call increment_turn
                               # at the beginning of the game. 
 
+    def __str__(self):
+        output = "Current game state:\n"
+        output += "PLAYERS:\n"
+        for p in self.players.values():
+            output += "    " + p.__str__()
+        output += "MOUNTAINS:\n"
+        for m in self.mountains.values():
+            output += "    " + m.__str__()
+        output += "\n"
+        return output
+
     """
     Update the current turn to the next player.
     """
