@@ -6,7 +6,7 @@ the Mountain Goats board game.
 """
 
 import random as Random
-from itertools import combinations
+from itertools import combinations, permutations
 from copy import deepcopy
 import logging
 logger = logging.getLogger(__name__)
@@ -21,7 +21,9 @@ def roll_the_dice():
 # the dice together, according to the Mountain Goats rules.
 # E.g. if dice = [2,3,4], here are examples of valid combinations:
 # [[2], [5], [5, 4], [9]]
-def generate_combinations(dice):
+# TODO: this doesn't find all valid moves.
+# e.g. misses [7, 8] from the roll [2, 3, 5, 5]
+def generate_combinations_old(dice):
     result = []
     n = len(dice)
     
@@ -56,9 +58,37 @@ def generate_combinations(dice):
         final_result.extend(generate_sums(subset))  # Add all possible sums
 
     # Remove duplicates
-    final_result = [list(x) for x in set(tuple(sublist) for sublist in final_result)]
+    final_result = [list(x) for x in set(tuple(sorted(sublist)) for sublist in final_result)]
 
     return final_result
+
+# Function to generate all combinations of dice rolls by summing
+# and/or removing dice from the roll.
+# Input is list of ints, return value is list of list of ints
+def generate_combinations(dice_roll):
+    final_list = [dice_roll]
+    # Base case: 1 die in the dice roll; return it
+    # TODO: do we want empty list in the list of possibilities?
+    if len(dice_roll) <= 1:
+        return final_list
+    
+    # Recursive case
+    # Generate all permutations of the dice roll as a list of lists
+    perms = [list(p) for p in permutations(dice_roll)]
+
+    # For each permutation
+    for p in perms:
+        # Create 2 new lists by adding first 2 numbers / removing first number
+        sum_list = [p[0] + p[1]] + p[2:]
+        remove_list = p[1:]
+        # Recurse on the new lists
+        final_list.extend(generate_combinations(sum_list))
+        final_list.extend(generate_combinations(remove_list))
+
+    # Strip duplicates and return final result
+    # TODO do we want to be removing duplicates on every recursive call?
+    final_list = [list(x) for x in set(tuple(sorted(sublist)) for sublist in final_list)]
+    return final_list
 
 # Given a dice roll, return a list of all the dice rolls that could be made by
 # converting extra ones into other values. (No summing, only changing the 1s)
@@ -106,7 +136,7 @@ def possible_moves(dice_roll, game_state):
     raw_list_of_moves = []
     for roll in expanded_dice_roll:
         raw_list_of_moves.extend(generate_combinations(roll))
-    
+
     # From each move, remove the elements that refer to mountains that don't
     # exist.  First make a list of mountains that exist, second compare the
     # elements to that list.
@@ -120,7 +150,7 @@ def possible_moves(dice_roll, game_state):
         for item in possible_move:
             if item in existing_mountains:
                 filtered_move.append(item)
-        moves_involving_real_mountains.append(filtered_move)        
+        moves_involving_real_mountains.append(filtered_move)
         
     # Now strip out all of the duplicates by converting the list to a set
     # and then back to a list again
@@ -128,7 +158,8 @@ def possible_moves(dice_roll, game_state):
     # final_output = list(set(moves_involving_real_mountains))
 
     # could make this faster with itertools https://stackoverflow.com/questions/2213923/removing-duplicates-from-a-list-of-lists
-    final_output = [list(x) for x in set(tuple(sublist) for sublist in moves_involving_real_mountains)]
+    # This list may/may not include [] depending on how mountain filtering went
+    final_output = [list(x) for x in set(tuple(sorted(sublist)) for sublist in moves_involving_real_mountains)]
 
     # Finally done!
     return final_output

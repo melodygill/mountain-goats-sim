@@ -6,8 +6,6 @@ List of Mountains (which, in turn, has location of goats and number of tokens
     remaining)
 List of Players (which, in turn, has the number of tokens the player owns)
 Current turn (int)
-
-Is responsible for generating a dice roll when necessary.
 """
 from mountain import Mountain
 from random import Random
@@ -24,14 +22,10 @@ class GameState:
 
     """
     Update the current turn to the next player.
-    Roll the dice for the next turn.
-    TODO: should rolling the dice be a separate function?
     """
     def next_turn(self):
         self.current_turn = (self.current_turn + 1) % self.num_players
-        # I moved dice roll to game_controller because I need the results
-        # there for is_move_valid()
-        
+
     def calculate_scores(self):
         # Returns a list of tuples of type (string player_color, int 
         # player_score)
