@@ -41,7 +41,7 @@ class GameState:
         # Returns a list of tuples of type (string player_color, int 
         # player_score)
         output = []
-        for player in self.players:
+        for player in self.players.values():
             score = 0
             for token in player.list_of_tokens:
                 score = score + token

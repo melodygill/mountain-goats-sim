@@ -79,7 +79,7 @@ class GameController:
         # Find which player's turn it is
         # current_player = self.game_state.current_turn % len(self.players)
         # player_obj = list(self.players.values())[current_player]
-        return player.get_moves(self.game_state, dice_roll)
+        return player.get_move(self.game_state, dice_roll)
 
     def move_is_valid(self, move, dice_roll): 
         # A move is a list of integers that say which mountains we want

@@ -5,7 +5,7 @@ dice_utility.py - a collection of routines to make and analyze dice rolls for
 the Mountain Goats board game.
 """
 
-import random as Random
+from random import randint
 from itertools import combinations, permutations
 from copy import deepcopy
 import logging
@@ -15,7 +15,7 @@ NUM_DICE = 4 # 4 dice in the traditional Mountain Goats game
 
 
 def roll_the_dice():
-    return [Random.randint(1,6) for _ in range(NUM_DICE)]
+    return [randint(1,6) for _ in range(NUM_DICE)]
 
 # Generates all combinations of dice rolls that can be formed by summing any of
 # the dice together, according to the Mountain Goats rules.

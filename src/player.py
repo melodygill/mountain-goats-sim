@@ -29,8 +29,8 @@ class Player:
         self.list_of_tokens.append(token_value)
 
     # Query the bot for moves
-    def get_moves(self, game_state, dice_roll):
-        return self.bot_object.get_moves(game_state, dice_roll)
+    def get_move(self, game_state, dice_roll):
+        return self.bot_object.get_move(game_state, dice_roll)
 
 
 # TODO: the following functions may not be needed because I changed the

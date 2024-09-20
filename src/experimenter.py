@@ -22,6 +22,7 @@ from player import Player
 from game_controller import GameController
 
 from bots.my_bot import MyBot
+from bots.random_move_bot import RandomMoveBot
 
 from collections import OrderedDict
 import logging
@@ -47,9 +48,10 @@ LIST_OF_BONUS_TOKENS = [15, 12, 9, 6]
 # First, make a dict of Player objects.
 # The order of LIST_OF_PLAYER_COLORS determines who goes first, who goes second, etc.
 players = OrderedDict()
-for color in LIST_OF_PLAYER_COLORS:
-    # For now, make all the players MyBots
-    players[color] = Player(color, MyBot())
+players[LIST_OF_PLAYER_COLORS[0]] = Player(LIST_OF_PLAYER_COLORS[0], MyBot())
+players[LIST_OF_PLAYER_COLORS[1]] = Player(LIST_OF_PLAYER_COLORS[1], MyBot())
+players[LIST_OF_PLAYER_COLORS[2]] = Player(LIST_OF_PLAYER_COLORS[2], RandomMoveBot())
+players[LIST_OF_PLAYER_COLORS[3]] = Player(LIST_OF_PLAYER_COLORS[3], RandomMoveBot())
 
 # Mountain objects need to have access to player objects
 FIVE_MOUNTAIN = Mountain(5, 12, 4, players)
